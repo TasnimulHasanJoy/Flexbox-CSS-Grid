@@ -1,0 +1,1160 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Flexbox & CSS Grid</title>
+
+    <style>
+
+        /* =====================================
+           BASIC SETTINGS
+        ===================================== */
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f4f7fb;
+            color: #1f2937;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+
+        /* =====================================
+           NAVIGATION
+        ===================================== */
+
+        nav {
+            background: rgba(15, 23, 42, 0.95);
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            gap: 12px;
+
+            padding: 16px;
+
+            position: sticky;
+            top: 0;
+
+            z-index: 1000;
+
+            backdrop-filter: blur(10px);
+
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        }
+
+
+        nav a {
+            position: relative;
+
+            color: white;
+
+            text-decoration: none;
+
+            padding: 10px 22px;
+
+            border-radius: 8px;
+
+            font-weight: bold;
+
+            transition:
+                transform 0.3s ease,
+                background 0.3s ease,
+                color 0.3s ease;
+        }
+
+
+        nav a::after {
+            content: "";
+
+            position: absolute;
+
+            left: 50%;
+            bottom: 4px;
+
+            width: 0;
+            height: 2px;
+
+            background: #60a5fa;
+
+            transform: translateX(-50%);
+
+            transition: width 0.3s ease;
+        }
+
+
+        nav a:hover {
+            background: rgba(37, 99, 235, 0.25);
+
+            color: #93c5fd;
+
+            transform: translateY(-3px);
+        }
+
+
+        nav a:hover::after {
+            width: 60%;
+        }
+
+
+        /* =====================================
+           HERO SECTION
+        ===================================== */
+
+        #home {
+            min-height: 600px;
+
+            position: relative;
+
+            display: flex;
+
+            flex-direction: column;
+
+            justify-content: center;
+
+            align-items: center;
+
+            text-align: center;
+
+            padding: 60px 20px;
+
+            overflow: hidden;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #dbeafe,
+                    #eff6ff,
+                    #e0e7ff
+                );
+        }
+
+
+        /* Animated circles */
+
+        #home::before,
+        #home::after {
+            content: "";
+
+            position: absolute;
+
+            border-radius: 50%;
+
+            opacity: 0.35;
+
+            filter: blur(2px);
+
+            animation: floating 6s ease-in-out infinite;
+        }
+
+
+        #home::before {
+            width: 280px;
+            height: 280px;
+
+            background: #60a5fa;
+
+            top: -80px;
+            left: -70px;
+        }
+
+
+        #home::after {
+            width: 350px;
+            height: 350px;
+
+            background: #818cf8;
+
+            right: -100px;
+            bottom: -120px;
+
+            animation-delay: 2s;
+        }
+
+
+        .hero-content {
+            position: relative;
+
+            z-index: 2;
+
+            animation: heroAppear 1.2s ease forwards;
+        }
+
+
+        #home h1 {
+            font-size: clamp(40px, 7vw, 72px);
+
+            color: #1e3a8a;
+
+            margin-bottom: 20px;
+
+            letter-spacing: -2px;
+
+            animation: titleGlow 3s ease-in-out infinite;
+        }
+
+
+        #home p {
+            font-size: 20px;
+
+            max-width: 750px;
+
+            color: #374151;
+
+            margin: auto;
+        }
+
+
+        .hero-button {
+            display: inline-block;
+
+            margin-top: 30px;
+
+            padding: 13px 28px;
+
+            background: #2563eb;
+
+            color: white;
+
+            text-decoration: none;
+
+            border-radius: 30px;
+
+            font-weight: bold;
+
+            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
+
+            transition: all 0.3s ease;
+        }
+
+
+        .hero-button:hover {
+            transform: translateY(-5px) scale(1.04);
+
+            background: #1d4ed8;
+
+            box-shadow: 0 12px 28px rgba(37, 99, 235, 0.4);
+        }
+
+
+        /* =====================================
+           GENERAL SECTION
+        ===================================== */
+
+        section {
+            padding: 80px 8%;
+        }
+
+
+        section h2 {
+            text-align: center;
+
+            font-size: 38px;
+
+            color: #1e3a8a;
+
+            margin-bottom: 45px;
+        }
+
+
+        .section-intro {
+            text-align: center;
+
+            max-width: 750px;
+
+            margin: -25px auto 40px;
+
+            color: #4b5563;
+
+            font-size: 18px;
+        }
+
+
+        /* =====================================
+           FLEXBOX
+        ===================================== */
+
+        .flex-container {
+            display: flex;
+
+            gap: 28px;
+
+            justify-content: space-between;
+
+            align-items: stretch;
+        }
+
+
+        .flex-card {
+            flex: 1;
+
+            background: white;
+
+            padding: 32px;
+
+            border-radius: 16px;
+
+            border: 1px solid #e5e7eb;
+
+            box-shadow:
+                0 8px 25px rgba(0, 0, 0, 0.07);
+
+            position: relative;
+
+            overflow: hidden;
+
+            transition:
+                transform 0.4s ease,
+                box-shadow 0.4s ease;
+        }
+
+
+        .flex-card::before {
+            content: "";
+
+            position: absolute;
+
+            top: 0;
+            left: 0;
+
+            width: 100%;
+            height: 4px;
+
+            background: #2563eb;
+
+            transform: scaleX(0);
+
+            transform-origin: left;
+
+            transition: transform 0.4s ease;
+        }
+
+
+        .flex-card:hover {
+            transform: translateY(-10px);
+
+            box-shadow:
+                0 18px 35px rgba(37, 99, 235, 0.15);
+        }
+
+
+        .flex-card:hover::before {
+            transform: scaleX(1);
+        }
+
+
+        .card-number {
+            font-size: 14px;
+
+            font-weight: bold;
+
+            color: #2563eb;
+
+            margin-bottom: 12px;
+
+            text-transform: uppercase;
+
+            letter-spacing: 1px;
+        }
+
+
+        .flex-card h3 {
+            color: #2563eb;
+
+            font-size: 23px;
+
+            margin-bottom: 12px;
+        }
+
+
+        .flex-card p {
+            color: #4b5563;
+        }
+
+
+        /* =====================================
+           GRID
+        ===================================== */
+
+        #grid {
+            background:
+                linear-gradient(
+                    180deg,
+                    #eef4ff,
+                    #f8fafc
+                );
+        }
+
+
+        .grid-container {
+            display: grid;
+
+            grid-template-columns: repeat(3, 1fr);
+
+            gap: 28px;
+        }
+
+
+        .grid-card {
+            background: white;
+
+            border-radius: 16px;
+
+            overflow: hidden;
+
+            border: 1px solid #e5e7eb;
+
+            box-shadow:
+                0 8px 25px rgba(0, 0, 0, 0.08);
+
+            transition:
+                transform 0.4s ease,
+                box-shadow 0.4s ease;
+        }
+
+
+        .grid-card:hover {
+            transform: translateY(-10px);
+
+            box-shadow:
+                0 20px 40px rgba(37, 99, 235, 0.18);
+        }
+
+
+        .image-container {
+            overflow: hidden;
+
+            height: 220px;
+        }
+
+
+        .grid-card img {
+            width: 100%;
+
+            height: 100%;
+
+            object-fit: cover;
+
+            display: block;
+
+            transition:
+                transform 0.6s ease;
+        }
+
+
+        .grid-card:hover img {
+            transform: scale(1.1);
+        }
+
+
+        .grid-content {
+            padding: 28px;
+        }
+
+
+        .grid-content h3 {
+            color: #2563eb;
+
+            font-size: 24px;
+
+            margin-bottom: 10px;
+        }
+
+
+        .grid-content p {
+            color: #4b5563;
+        }
+
+
+        /* =====================================
+           EXPLANATION
+        ===================================== */
+
+        .explanation {
+            max-width: 1000px;
+
+            margin: auto;
+
+            background: white;
+
+            padding: 40px;
+
+            border-radius: 18px;
+
+            border: 1px solid #e5e7eb;
+
+            box-shadow:
+                0 10px 30px rgba(0, 0, 0, 0.07);
+        }
+
+
+        .explanation h2 {
+            margin-bottom: 25px;
+        }
+
+
+        .explanation h3 {
+            color: #2563eb;
+
+            margin-top: 30px;
+
+            margin-bottom: 10px;
+
+            font-size: 23px;
+        }
+
+
+        .explanation p {
+            color: #4b5563;
+        }
+
+
+        .explanation ul {
+            padding-left: 25px;
+
+            color: #4b5563;
+        }
+
+
+        .explanation li {
+            margin: 8px 0;
+        }
+
+
+        /* =====================================
+           FEATURES
+        ===================================== */
+
+        #features {
+            background: #f1f5f9;
+        }
+
+
+        #features ul {
+            max-width: 750px;
+
+            margin: auto;
+
+            display: grid;
+
+            grid-template-columns: repeat(2, 1fr);
+
+            gap: 18px;
+
+            list-style: none;
+        }
+
+
+        #features li {
+            background: white;
+
+            padding: 22px;
+
+            border-radius: 12px;
+
+            border-left: 5px solid #2563eb;
+
+            box-shadow:
+                0 5px 15px rgba(0, 0, 0, 0.06);
+
+            transition:
+                transform 0.3s ease,
+                box-shadow 0.3s ease;
+        }
+
+
+        #features li:hover {
+            transform: translateX(8px);
+
+            box-shadow:
+                0 10px 25px rgba(37, 99, 235, 0.12);
+        }
+
+
+        #features strong {
+            color: #1e3a8a;
+        }
+
+
+        /* =====================================
+           FOOTER
+        ===================================== */
+
+        footer {
+            background: #0f172a;
+
+            color: white;
+
+            text-align: center;
+
+            padding: 35px 20px;
+        }
+
+
+        footer p:first-child {
+            font-size: 20px;
+
+            font-weight: bold;
+
+            margin-bottom: 5px;
+        }
+
+
+        footer p:last-child {
+            color: #94a3b8;
+        }
+
+
+        /* =====================================
+           ANIMATIONS
+        ===================================== */
+
+        @keyframes heroAppear {
+
+            from {
+                opacity: 0;
+
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+
+                transform: translateY(0);
+            }
+        }
+
+
+        @keyframes floating {
+
+            0%,
+            100% {
+                transform: translateY(0) rotate(0deg);
+            }
+
+            50% {
+                transform: translateY(-25px) rotate(8deg);
+            }
+        }
+
+
+        @keyframes titleGlow {
+
+            0%,
+            100% {
+                text-shadow:
+                    0 0 0 rgba(37, 99, 235, 0);
+            }
+
+            50% {
+                text-shadow:
+                    0 5px 25px rgba(37, 99, 235, 0.2);
+            }
+        }
+
+
+        /* =====================================
+           TABLET RESPONSIVE
+        ===================================== */
+
+        @media (max-width: 800px) {
+
+            .flex-container {
+                flex-direction: column;
+            }
+
+
+            .grid-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+
+            #features ul {
+                grid-template-columns: 1fr;
+            }
+
+
+            section {
+                padding: 65px 6%;
+            }
+        }
+
+
+        /* =====================================
+           MOBILE RESPONSIVE
+        ===================================== */
+
+        @media (max-width: 550px) {
+
+            nav {
+                flex-direction: column;
+
+                gap: 5px;
+            }
+
+
+            nav a {
+                width: 100%;
+
+                text-align: center;
+            }
+
+
+            #home {
+                min-height: 500px;
+            }
+
+
+            #home h1 {
+                font-size: 40px;
+            }
+
+
+            #home p {
+                font-size: 17px;
+            }
+
+
+            .grid-container {
+                grid-template-columns: 1fr;
+            }
+
+
+            .explanation {
+                padding: 25px;
+            }
+
+
+            section {
+                padding: 50px 5%;
+            }
+
+
+            section h2 {
+                font-size: 32px;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- =====================================
+         NAVIGATION MENU
+    ====================================== -->
+
+    <nav>
+
+        <a href="#home">Home</a>
+
+        <a href="#flexbox">Flexbox</a>
+
+        <a href="#grid">Grid</a>
+
+        <a href="#about">About</a>
+
+        <a href="#features">Features</a>
+
+    </nav>
+
+
+
+    <!-- =====================================
+         HOME SECTION
+    ====================================== -->
+
+    <section id="home">
+
+        <div class="hero-content">
+
+            <h1>Flexbox & CSS Grid</h1>
+
+            <p>
+                Explore modern CSS layouts using Flexbox,
+                CSS Grid and responsive web design.
+            </p>
+
+            <a href="#flexbox" class="hero-button">
+                Explore Layouts ↓
+            </a>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================
+         FLEXBOX SECTION
+    ====================================== -->
+
+    <section id="flexbox">
+
+        <h2>Flexbox Layout</h2>
+
+        <p class="section-intro">
+            Flexbox is a one-dimensional layout system
+            that makes it easier to arrange and align
+            elements in rows or columns.
+        </p>
+
+
+        <div class="flex-container">
+
+
+            <div class="flex-card">
+
+                <div class="card-number">
+                    Feature 01
+                </div>
+
+                <h3>Flexible Layout</h3>
+
+                <p>
+                    Flexbox helps arrange elements in a row
+                    or column and allows them to adapt to
+                    the available space.
+                </p>
+
+            </div>
+
+
+
+            <div class="flex-card">
+
+                <div class="card-number">
+                    Feature 02
+                </div>
+
+                <h3>Easy Alignment</h3>
+
+                <p>
+                    Properties such as justify-content and
+                    align-items make horizontal and vertical
+                    alignment easier.
+                </p>
+
+            </div>
+
+
+
+            <div class="flex-card">
+
+                <div class="card-number">
+                    Feature 03
+                </div>
+
+                <h3>Responsive</h3>
+
+                <p>
+                    Flexbox can change from a row layout to
+                    a column layout when the screen becomes
+                    smaller.
+                </p>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================
+         GRID SECTION
+    ====================================== -->
+
+    <section id="grid">
+
+        <h2>CSS Grid Layout</h2>
+
+        <p class="section-intro">
+            CSS Grid is a two-dimensional layout system
+            that allows content to be organized using
+            rows and columns.
+        </p>
+
+
+        <div class="grid-container">
+
+
+            <!-- GRID CARD 1 -->
+
+            <div class="grid-card">
+
+                <div class="image-container">
+
+                    <img
+                        src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=900&q=80"
+                        alt="Computer and programming">
+
+                </div>
+
+
+                <div class="grid-content">
+
+                    <h3>Columns</h3>
+
+                    <p>
+                        CSS Grid allows us to create multiple
+                        columns and organize content in a
+                        structured layout.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- GRID CARD 2 -->
+
+            <div class="grid-card">
+
+                <div class="image-container">
+
+                    <img
+                        src="https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=900&q=80"
+                        alt="Modern workspace">
+
+                </div>
+
+
+                <div class="grid-content">
+
+                    <h3>Rows</h3>
+
+                    <p>
+                        Grid can organize content using both
+                        rows and columns, making complex
+                        layouts easier to create.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- GRID CARD 3 -->
+
+            <div class="grid-card">
+
+                <div class="image-container">
+
+                    <img
+                        src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=900&q=80"
+                        alt="Programming code">
+
+                </div>
+
+
+                <div class="grid-content">
+
+                    <h3>Grid Gap</h3>
+
+                    <p>
+                        The gap property creates consistent
+                        space between rows and columns.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================
+         ABOUT / EXPLANATION
+    ====================================== -->
+
+    <section id="about">
+
+        <div class="explanation">
+
+            <h2>How the Layout Works</h2>
+
+            <p>
+                This webpage uses both Flexbox and CSS Grid
+                to organize the content. Flexbox is mainly
+                used for one-dimensional layouts, while CSS
+                Grid is useful for two-dimensional layouts.
+            </p>
+
+
+            <h3>Flexbox Settings</h3>
+
+            <ul>
+
+                <li>
+                    <strong>display: flex;</strong>
+                    activates Flexbox.
+                </li>
+
+                <li>
+                    <strong>justify-content:</strong>
+                    controls horizontal alignment.
+                </li>
+
+                <li>
+                    <strong>align-items:</strong>
+                    controls vertical alignment.
+                </li>
+
+                <li>
+                    <strong>flex-direction:</strong>
+                    controls whether items are arranged
+                    in a row or column.
+                </li>
+
+                <li>
+                    <strong>gap:</strong>
+                    creates space between Flexbox items.
+                </li>
+
+            </ul>
+
+
+            <h3>CSS Grid Settings</h3>
+
+            <ul>
+
+                <li>
+                    <strong>display: grid;</strong>
+                    activates CSS Grid.
+                </li>
+
+                <li>
+                    <strong>grid-template-columns:</strong>
+                    defines the number of columns.
+                </li>
+
+                <li>
+                    <strong>repeat(3, 1fr):</strong>
+                    creates three equal columns.
+                </li>
+
+                <li>
+                    <strong>gap:</strong>
+                    creates space between Grid items.
+                </li>
+
+            </ul>
+
+
+            <h3>Responsive Design</h3>
+
+            <p>
+                The webpage uses CSS media queries to respond
+                to different screen sizes. On tablets the Grid
+                changes to two columns. On mobile phones it
+                changes to one column. The navigation menu also
+                changes from horizontal to vertical.
+            </p>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================
+         FEATURES SECTION
+    ====================================== -->
+
+    <section id="features">
+
+        <h2>Website Features</h2>
+
+        <p class="section-intro">
+            The website demonstrates several modern
+            web development techniques.
+        </p>
+
+
+        <ul>
+
+            <li>
+                <strong>Navigation Menu:</strong>
+                Use the menu to move between different
+                sections of the webpage.
+            </li>
+
+            <li>
+                <strong>Flexbox:</strong>
+                Used to arrange content in a flexible row
+                or column.
+            </li>
+
+            <li>
+                <strong>CSS Grid:</strong>
+                Used to organize content into rows and columns.
+            </li>
+
+            <li>
+                <strong>Images:</strong>
+                Images make the webpage more visual and engaging.
+            </li>
+
+            <li>
+                <strong>Animations:</strong>
+                Hover effects and smooth animations make
+                the interface more interactive.
+            </li>
+
+            <li>
+                <strong>Responsive Design:</strong>
+                The layout automatically adapts to different
+                screen sizes.
+            </li>
+
+        </ul>
+
+    </section>
+
+
+
+    <!-- =====================================
+         FOOTER
+    ====================================== -->
+
+    <footer>
+
+        <p>
+            Flexbox & CSS Grid Assignment
+        </p>
+
+        <p>
+            Web Development
+        </p>
+
+    </footer>
+
+
+</body>
+
+</html>
